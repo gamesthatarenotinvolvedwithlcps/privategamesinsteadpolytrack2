@@ -14,7 +14,7 @@
       display: none;
     }
     #password-container {
-      display: none;
+      display: block;
     }
   </style>
 </head>
@@ -26,7 +26,7 @@
   </div>
 
   <div id="protected-content">
-    <!-- This is where we will inject the new HTML content -->
+    <!-- This is where we will inject the new content -->
   </div>
 
   <script>
@@ -37,7 +37,6 @@
       const date = new Date();
       date.setTime(date.getTime() + (hours * 60 * 60 * 1000)); // Convert hours to milliseconds
       document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
-      console.log(`Cookie set: ${name}=${value}; expires=${date.toUTCString()}`);
     }
 
     // Function to get a cookie value by name
@@ -69,24 +68,30 @@
     function showContent() {
       // Hide the password prompt
       document.getElementById('password-container').style.display = 'none';
-      
-      // Inject the new HTML content into the page
+
+      // Display the protected content
       const protectedContent = document.getElementById('protected-content');
-      protectedContent.innerHTML = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <link rel="manifest" href="manifest.json" />
-            <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
-          </head>
-          <body>
-            <canvas id="screen"></canvas>
-            <div id="ui"></div>
-            <div id="transition-layer"></div>
-            <script type="module" src="main.bundle.js" defer></script>
-          </body>
-        </html>
-      `;
+      protectedContent.style.display = 'block';
+
+      // Add your custom HTML content to the page dynamically
+      const canvas = document.createElement('canvas');
+      canvas.id = 'screen';
+      protectedContent.appendChild(canvas);
+
+      const ui = document.createElement('div');
+      ui.id = 'ui';
+      protectedContent.appendChild(ui);
+
+      const transitionLayer = document.createElement('div');
+      transitionLayer.id = 'transition-layer';
+      protectedContent.appendChild(transitionLayer);
+
+      // Dynamically load the JavaScript file (main.bundle.js)
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'main.bundle.js';
+      script.defer = true;
+      protectedContent.appendChild(script);
     }
 
     // On page load, check if the cookie exists
